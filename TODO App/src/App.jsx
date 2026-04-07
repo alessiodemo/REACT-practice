@@ -1,6 +1,62 @@
 import { useState } from 'react'
 import './App.css'
 
+
+function TaskItem({task, onToggle, onDelete}) {
+
+    return (
+    <li style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "12px 16px",
+        borderRadius: "10px",
+        background: task.completed ? "#f0fdf4" : "#fff",
+        border: "1px solid",
+        borderColor: task.completed  ? "#bbf7d0" : "#e5e7eb",
+        transition: "all 0.2s",
+      }}
+    >
+        <input 
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => onToggle(task.id)}
+                style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#16a34a" }}
+        />
+        <span 
+            style={{
+            flex: 1,
+            fontSize: "15px",
+            color: task.completed ? "#9ca3af" : "#111827",
+            textDecoration: task.completed ? "line-through" : "none",
+            transition: "all 0.2s",
+            }}
+        >
+        {task.text}
+        </span>
+        <button
+            onClick={() => onDelete(task.id)}
+            style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#ef4444",
+            fontSize: "18px",
+            lineHeight: 1,
+            padding: "0 4px",
+            }}
+            title = "Elimina task"
+        >
+            x
+        </button>
+    </li>
+    );
+}
+
+
+
+
+
 export default function TODOApp() {
 
     const [input, setInput] = useState('');
@@ -22,7 +78,7 @@ export default function TODOApp() {
     }
 
     function toggleTask(id) {
-        setTasks(tasks.map((t) => t.id === id ? {...t, completed: !t.completed } : t));
+        setTasks(tasks.map((t) => (t.id === id ? {...t, completed: !t.completed } : t)));
 
     }
 
@@ -36,8 +92,8 @@ export default function TODOApp() {
     }
 
     const visibleTasks = tasks.filter((t) => {
-        if (filter === "active") return !t.done;
-        if (filter === "done") return t.done;
+        if (filter === "active") return !t.completed;
+        if (filter === "done") return t.completed;
         return true;
     });
 
@@ -67,7 +123,7 @@ export default function TODOApp() {
                 </p>
                 <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
                     <input value={input}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleAddButton}
                             placeholder="Aggiungi un nuovo task..."
                             style={{
